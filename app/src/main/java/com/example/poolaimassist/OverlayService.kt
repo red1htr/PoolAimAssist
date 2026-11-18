@@ -1,6 +1,7 @@
 
 package com.example.poolaimassist
 
+import android.app.Activity
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -46,7 +47,8 @@ class OverlayService : Service() {
             startForeground(NOTIFICATION_ID, buildNotification())
             Log.i(TAG, "Foreground service started")
 
-            val resultCode = intent?.getIntExtra(EXTRA_RESULT_CODE, -1) ?: -1
+            val resultCode = intent?.getIntExtra(EXTRA_RESULT_CODE, 0) ?: 0
+
             val resultData: Intent? =
                 if (Build.VERSION.SDK_INT >= 33) {
                     intent?.getParcelableExtra(EXTRA_RESULT_DATA, Intent::class.java)
@@ -55,7 +57,7 @@ class OverlayService : Service() {
                     intent?.getParcelableExtra(EXTRA_RESULT_DATA)
                 }
 
-            if (resultCode == -1 || resultData == null) {
+            if (resultCode != Activity.RESULT_OK || resultData == null) {
                 throw IllegalStateException("Missing screen capture permission data")
             }
 
